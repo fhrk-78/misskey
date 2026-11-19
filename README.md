@@ -7,6 +7,12 @@
 
 [Learn more](https://misskey-hub.net/)
 
+## Modified
+
+This repository has modified fork of [misskey-dev/misskey](https://github.com/misskey-dev/misskey)
+
+Change logs has contained in [CHANGELOG_FORK.md](./CHANGELOG_FORK.md)
+
 ---
 
 <a href="https://misskey-hub.net/servers/">
