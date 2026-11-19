@@ -8,7 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<button v-if="copyButton" :class="[$style.codeBlockCopyButton, { [$style.withOuterStyle]: withOuterStyle }]" class="_button" @click="copy">
 		<i class="ti ti-copy"></i>
 	</button>
-	<Suspense>
+	<!-- eslint-disable-next-line vue/no-v-html -->
+	<div v-if="isMath" :class="$style.mathRoot" v-html="mathHtml"></div>
+	<Suspense v-else>
 		<template #fallback>
 			<pre
 				class="_selectable"
@@ -42,7 +44,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, computed, ref } from 'vue';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
@@ -61,6 +65,14 @@ const props = withDefaults(defineProps<{
 
 const show = ref(props.forceShow === true ? true : !prefer.s.dataSaver.code);
 
+const isMath = computed(() => ['tex', 'math'].includes(props.lang?.toLowerCase() ?? ''));
+const mathHtml = computed(() => isMath.value ? katex.renderToString(props.code, {
+	displayMode: true,
+	output: 'htmlAndMathml',
+	throwOnError: false,
+	trust: false,
+}) : '');
+
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
 
 function copy() {
@@ -71,6 +83,15 @@ function copy() {
 <style module lang="scss">
 .codeBlockRoot {
 	position: relative;
+}
+
+.mathRoot {
+	overflow-x: auto;
+	padding: 8px;
+	margin: 8px 0;
+	border-radius: 8px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-bg);
 }
 
 .codeBlockCopyButton {
