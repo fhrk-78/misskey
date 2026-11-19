@@ -152,6 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
 				<XFiles :key="user.id" :user="user" @showMore="emit('showMoreFiles')"/>
 				<XActivity :key="user.id" :user="user"/>
+				<XPages :key="user.id" :user="user" @showMore="emit('showMorePages')"/>
 			</div>
 		</div>
 	</div>
@@ -162,6 +163,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
+import { userPage } from '@@/js/user.js';
+import type XTimeline_TypeReferenceOnly from './index.timeline.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -173,7 +176,6 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
 import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
-import { userPage } from '@@/js/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/i.js';
@@ -187,7 +189,6 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { isBirthday } from '@/utility/is-birthday.js';
-import type XTimeline_TypeReferenceOnly from './index.timeline.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -206,6 +207,7 @@ function calcAge(birthdate: string): number {
 
 const XFiles = defineAsyncComponent(() => import('./index.files.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
+const XPages = defineAsyncComponent(() => import('./index.pages.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
 
 const props = withDefaults(defineProps<{
@@ -221,6 +223,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'showMoreFiles'): void;
+	(ev: 'showMorePages'): void;
 }>();
 
 const router = useRouter();
