@@ -1553,6 +1553,10 @@ export interface Locale extends ILocale {
      */
     "pages": string;
     /**
+     * この記事を書いた人
+     */
+    "pageAuthor": string;
+    /**
      * 連携
      */
     "integration": string;

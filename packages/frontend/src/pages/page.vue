@@ -4,94 +4,104 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<Transition
-			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
-			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
-			:enterFromClass="prefer.s.animation ? $style.fadeEnterFrom : ''"
-			:leaveToClass="prefer.s.animation ? $style.fadeLeaveTo : ''"
-			mode="out-in"
-		>
-			<div v-if="page" :key="page.id" class="_gaps">
-				<div :class="$style.pageMain">
-					<div :class="$style.pageBanner">
-						<div :class="$style.pageBannerBgRoot">
-							<MkImgWithBlurhash
-								v-if="page.eyeCatchingImageId"
-								:class="$style.pageBannerBg"
-								:hash="page.eyeCatchingImage?.blurhash"
-								:cover="true"
-								:forceBlurhash="true"
-							/>
-							<img
-								v-else-if="instance.backgroundImageUrl || instance.bannerUrl"
-								:class="[$style.pageBannerBg, $style.pageBannerBgFallback1]"
-								:src="getStaticImageUrl(instance.backgroundImageUrl ?? instance.bannerUrl!)"
-							/>
-							<div v-else :class="[$style.pageBannerBg, $style.pageBannerBgFallback2]"></div>
-						</div>
-						<div v-if="page.eyeCatchingImageId" :class="$style.pageBannerImage">
-							<MkMediaImage
-								:image="page.eyeCatchingImage!"
-								:cover="true"
-								:disableImageLink="true"
-								:class="$style.thumbnail"
-							/>
-						</div>
-						<div :class="$style.pageBannerTitle" class="_gaps_s">
-							<h1>{{ page.title || page.name }}</h1>
-							<div :class="$style.pageBannerTitleSub">
-								<div v-if="page.user" :class="$style.pageBannerTitleUser">
-									<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
-								</div>
-								<div :class="$style.pageBannerTitleSubActions">
-									<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
-									<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs" :class="$style.pageRoot">
+	<div :class="$style.pageLayout">
+		<div class="_spacer" style="--MI_SPACER-w: 800px;">
+			<Transition
+				:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.fadeEnterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.fadeLeaveTo : ''"
+				mode="out-in"
+			>
+				<div v-if="page" :key="page.id" class="_gaps">
+					<div :class="$style.pageMain">
+						<div :class="$style.pageBanner">
+							<div :class="$style.pageBannerBgRoot">
+								<MkImgWithBlurhash
+									v-if="page.eyeCatchingImageId"
+									:class="$style.pageBannerBg"
+									:hash="page.eyeCatchingImage?.blurhash"
+									:cover="true"
+									:forceBlurhash="true"
+								/>
+								<img
+									v-else-if="instance.backgroundImageUrl || instance.bannerUrl"
+									:class="[$style.pageBannerBg, $style.pageBannerBgFallback1]"
+									:src="getStaticImageUrl(instance.backgroundImageUrl ?? instance.bannerUrl!)"
+								/>
+								<div v-else :class="[$style.pageBannerBg, $style.pageBannerBgFallback2]"></div>
+							</div>
+							<div v-if="page.eyeCatchingImageId" :class="$style.pageBannerImage">
+								<MkMediaImage
+									:image="page.eyeCatchingImage!"
+									:cover="true"
+									:disableImageLink="true"
+									:class="$style.thumbnail"
+								/>
+							</div>
+							<div :class="$style.pageBannerTitle" class="_gaps_s">
+								<h1>{{ page.title || page.name }}</h1>
+								<div :class="$style.pageBannerTitleSub">
+									<div v-if="page.user" :class="$style.pageBannerTitleUser">
+										<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
+									</div>
+									<div :class="$style.pageBannerTitleSubActions">
+										<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
+										<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div :class="$style.pageContent">
-						<XPage :page="page"/>
-					</div>
-					<div :class="$style.pageActions">
-						<div>
-							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+						<div :class="$style.pageContent">
+							<XPage :page="page"/>
 						</div>
-						<div :class="$style.other">
-							<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
-							<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
-							<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
-							<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @click="showMenu"><i class="ti ti-dots ti-fw"></i></button>
+						<div :class="$style.pageActions">
+							<div>
+								<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+								<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							</div>
+							<div :class="$style.other">
+								<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
+								<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
+								<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @click="showMenu"><i class="ti ti-dots ti-fw"></i></button>
+							</div>
+						</div>
+						<div :class="$style.pageDate">
+							<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+							<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 						</div>
 					</div>
-					<div :class="$style.pageUser">
-						<MkAvatar :user="page.user" :class="$style.avatar" link preview/>
-						<MkA :to="`/@${username}`">
-							<MkUserName :user="page.user" :class="$style.name"/>
-							<MkAcct :user="page.user" :class="$style.acct"/>
-						</MkA>
-						<!--<MkFollowButton v-if="!$i || $i.id != page.user.id" :user="page.user!" :inline="true" :transparent="false" :full="true" :class="$style.follow"/>-->
-					</div>
-					<div :class="$style.pageDate">
-						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
-					</div>
+					<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
+					<MkContainer :max-height="300" :foldable="true" class="other">
+						<template #icon><i class="ti ti-clock"></i></template>
+						<template #header>{{ i18n.ts.recentPosts }}</template>
+						<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
+							<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
+						</MkPagination>
+					</MkContainer>
 				</div>
-				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
-				<MkContainer :max-height="300" :foldable="true" class="other">
-					<template #icon><i class="ti ti-clock"></i></template>
-					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
-					</MkPagination>
-				</MkContainer>
+				<MkError v-else-if="error" @retry="fetchPage()"/>
+				<MkLoading v-else/>
+			</Transition>
+		</div>
+		<div v-if="page" :class="$style.pageSub" class="_panel _gaps">
+			<h2 :class="$style.pageSubHeading">{{ i18n.ts.pageAuthor }}</h2>
+			<div :class="$style.pageSubUser">
+				<MkA :to="`/@${page.user.username}`" :class="$style.pageSubProfile">
+					<MkAvatar :user="page.user" :class="$style.pageSubAvatar" indicator preview/>
+					<span :class="$style.pageSubNames">
+						<MkUserName :user="page.user" :class="$style.pageSubName" :nowrap="false"/>
+						<MkAcct :user="page.user" :class="$style.pageSubAcct"/>
+					</span>
+				</MkA>
+				<MkA :to="`/@${page.user.username}`" class="_button" :class="$style.pageSubLink">
+					{{ i18n.ts.profile }}
+					<i class="ti ti-arrow-up-right"></i>
+				</MkA>
 			</div>
-			<MkError v-else-if="error" @retry="fetchPage()"/>
-			<MkLoading v-else/>
-		</Transition>
+		</div>
 	</div>
 </PageWithHeader>
 </template>
@@ -107,7 +117,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
@@ -364,6 +373,18 @@ definePage(() => ({
 	}
 }
 
+.pageRoot {
+	position: relative;
+}
+
+.pageLayout {
+	display: grid;
+	grid-template-columns: minmax(0, 800px) 260px;
+	justify-content: center;
+	align-items: start;
+	gap: var(--MI-margin);
+}
+
 .pageMain {
 	border-radius: var(--MI-radius);
 	padding: 2rem;
@@ -484,43 +505,88 @@ definePage(() => ({
 	}
 }
 
-.pageUser {
+.pageDate {
+	margin-bottom: 1.5rem;
+}
+
+.pageSub {
+	position: sticky;
+
+	top: 72px;
+	padding: 2rem;
+	width: 260px;
+	box-sizing: border-box;
+
+	z-index: 99;
+}
+
+.pageSubHeading {
+	font-size: 1rem;
+	margin: 0;
+}
+
+.pageSubUser {
+	display: flex;
+	flex-direction: column;
+	gap: var(--MI-margin);
+}
+
+.pageSubProfile {
 	display: flex;
 	align-items: center;
+	gap: var(--MI-marginHalf);
+	min-width: 0;
+}
 
-	border-top: 1px solid var(--MI_THEME-divider);
-	padding-top: 1.5rem;
-	margin-bottom: 1.5rem;
+.pageSubAvatar {
+	width: 3rem;
+	height: 3rem;
+	flex: 0 0 auto;
+}
 
-	.avatar,
-	.name,
-	.acct {
-		display: block;
-	}
+.pageSubNames {
+	min-width: 0;
+}
 
-	.avatar {
-		width: 4rem;
-		height: 4rem;
-		margin-right: 1rem;
-	}
+.pageSubName,
+.pageSubAcct {
+	display: block;
+}
 
-	.name {
-		font-size: 110%;
-		font-weight: 700;
-	}
+.pageSubName {
+	font-weight: 700;
+}
 
-	.acct {
-		font-size: 90%;
-		opacity: 0.7;
-	}
+.pageSubAcct {
+	font-size: 90%;
+	opacity: 0.7;
+}
 
-	.follow {
-		margin-left: auto;
+.pageSubLink {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--MI-marginHalf);
+	padding: 0.6rem;
+	border-radius: var(--MI-radius);
+	background: var(--MI_THEME-buttonBg);
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+		text-decoration: none;
 	}
 }
 
-.pageDate {
-	margin-bottom: 1.5rem;
+@media (max-width: 1200px) {
+	.pageLayout {
+		display: block;
+	}
+
+	.pageSub {
+		position: static;
+		width: min(800px, calc(100% - var(--MI-margin) - var(--MI-margin)));
+		margin: 0 auto var(--MI-margin);
+	}
 }
 
 .pageLinks {
