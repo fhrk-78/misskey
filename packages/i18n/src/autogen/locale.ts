@@ -3413,6 +3413,22 @@ export interface Locale extends ILocale {
      */
     "clear": string;
     /**
+     * 本文をクリア
+     */
+    "clearText": string;
+    /**
+     * 本文をクリアしますか？
+     */
+    "clearTextConfirm": string;
+    /**
+     * MFMについて
+     */
+    "mfmAbout": string;
+    /**
+     * 本文の操作
+     */
+    "textActions": string;
+    /**
      * 全て既読にする
      */
     "markAllAsRead": string;

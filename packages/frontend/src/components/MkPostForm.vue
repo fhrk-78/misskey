@@ -102,6 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button ref="textActionsButton" v-tooltip="i18n.ts.textActions" class="_button" :class="$style.footerButton" @click="showTextActions"><i class="ti ti-dots"></i></button>
 		</div>
 		<div :class="$style.footerRight">
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
@@ -189,6 +190,7 @@ const cwInputEl = useTemplateRef('cwInputEl');
 const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
 const visibilityButton = useTemplateRef('visibilityButton');
 const otherSettingsButton = useTemplateRef('otherSettingsButton');
+const textActionsButton = useTemplateRef('textActionsButton');
 const accountMenuEl = useTemplateRef('accountMenuEl');
 const footerEl = useTemplateRef('footerEl');
 const submitButtonEl = useTemplateRef('submitButtonEl');
@@ -689,6 +691,28 @@ function showOtherSettings() {
 	os.popupMenu(menuItems, otherSettingsButton.value);
 }
 //#endregion
+
+function showTextActions() {
+	os.popupMenu([{
+		icon: 'ti ti-eraser',
+		text: i18n.ts.clearText,
+		danger: true,
+		action: async () => {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.ts.clearTextConfirm,
+			});
+			if (canceled) return;
+			text.value = '';
+		},
+	}, {
+		type: 'a',
+		icon: 'ti ti-palette',
+		text: i18n.ts.mfmAbout,
+		href: 'https://misskey-hub.net/docs/for-users/features/mfm/',
+		target: '_blank',
+	}], textActionsButton.value);
+}
 
 function pushVisibleUser(user: Misskey.entities.UserLite) {
 	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
