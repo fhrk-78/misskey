@@ -1553,6 +1553,10 @@ export interface Locale extends ILocale {
      */
     "pages": string;
     /**
+     * この記事を書いた人
+     */
+    "pageAuthor": string;
+    /**
      * 連携
      */
     "integration": string;
@@ -3408,6 +3412,22 @@ export interface Locale extends ILocale {
      * クリア
      */
     "clear": string;
+    /**
+     * 本文をクリア
+     */
+    "clearText": string;
+    /**
+     * 本文をクリアしますか？
+     */
+    "clearTextConfirm": string;
+    /**
+     * MFMについて
+     */
+    "mfmAbout": string;
+    /**
+     * 本文の操作
+     */
+    "textActions": string;
     /**
      * 全て既読にする
      */
